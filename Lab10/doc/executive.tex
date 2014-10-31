@@ -1,0 +1,258 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage{default}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{ragged2e}
+\usepackage{array}
+\usepackage{mathtools}
+\usepackage{natbib}
+
+\setbeamercolor{blockstitle}{bg=yellow, fg=purple}
+\setbeamercolor{blockstext}{bg=white, fg=teal}
+\setbeamercovered{dynamic}
+\usetheme{Madrid}
+\usecolortheme{whale}
+
+\section{Gale Shapeley Algorithm}
+\section{Overlaying Concepts}
+\subsection{Specifications}
+\subsection[Examples]{Examples: Lists, Graphics, Tables}
+\section[Sparkle]{Adding that Sparkle}
+\subsection{Sections}
+\subsection{Themes}
+\section*{References}
+
+\title[CS251 Project]{Seat Allocation Portal}
+\subtitle{A CS251 Report by Group 31}
+\date{Team 31 : !false}
+\author[Prakash, Maloo \& Thakoor]
+{%
+  \texorpdfstring{
+    \begin{columns}%[onlytextwidth]
+      \column{.25\linewidth}
+      \centering
+      Pradyot Prakash\\
+      {130050008}\\
+      \href{mailto:pp2105@gmail.com}{pp2105@gmail.com}
+      \column{.35\linewidth}
+      \centering
+      Chandra Maloo\\
+      {130050009}\\
+      \href{mailto:maloochandra@gmail.com}{maloochandra@gmail.com}
+      \column{.35\linewidth}
+      \centering
+      Shantanu Thakoor\\
+      {130050008}\\
+      \href{mailto:shanu.thakoor@gmail.com}{shanu.thakoor@gmail.com}
+    \end{columns}
+  }
+  {Pradyot Prakash, Chandra Maloo \& Shantanu Thakoor}
+}
+\institute{IIT Bombay}
+
+\begin{document}
+
+\frame{\maketitle}
+
+\begin{frame}[t]{Introduction}{}
+  \pause
+  This is a software used for Allocation of seats of various engineering programmes to students based on their performance in a common entrance examination - JEE.
+  The software takes the Merit list containing various ranks of all the students and their choices of preference of the programs. On the contrary to what it seems this not an easy task. We have used two algorithms for the same. First one is quite simple one assuming this to be an easy job. But as it turns out this is not a fair algorithm. So we have used the well known Gale Shapeley algorithm for a fair allocation of seats. \\
+  \pause
+  We have also created a web portal using Django framework for the same. On this portal each user has an account and he/she can login to fill in the preferences of his choice. Later on, when the allocation has been done then the student can see which college has been allotted to him. Based on previous year ranks we are also suggesting the possible programmes that a student might get admitted to based on previous year opening and closing ranks.
+ \vspace{1cm}
+ \end{frame}
+
+\begin{frame}[t]{Seat Allocation Algorithms}
+\pause
+\textbf{Gale Shapeley Algorithm}  
+\textbf{GaleShapely algorithm} is pathbreaking but simple in its conception and implementation.
+Essentially, it goes as follows:
+ \pause
+\begin{itemize}
+\item Every candidate applies to the first program on its preference list
+ \pause
+\item Every program rejects certain candidates and waitlists the others based on capacity and the meritlist it uses
+ \pause
+\item Rejected candidates move one index further along their preference list, waitlisted candidates stay on the same index
+ \pause
+\item Algorithm terminates when either all candidates reach the end of their preference list, or no candidate is rejected by any program when it filters its
+applications
+ \pause
+\item When the algorithm terminates, a candidate is alloted the program that (s)he is currently waitlisted for; it (s)he is not waitlisted for anything, (s)he does not get alloted a seat
+ \pause
+\item Only minimal changes are needed to serve needs of DS and Foreign national student allocations
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Seat Allocation Algorithms}
+\pause
+\textbf{MeritOrder algorithm} is also simple; perhaps a tad too simple. It follows a greedy algorithm approach, allotting candidates the best seat it possibly can the first time it sees them, and never looks at them again.
+This algorithm is not fair to all the candidates
+ \pause
+\begin{itemize}
+\item Arrange the candidates in order of their ranks
+ \pause
+\item Arrange the respective ranklists based on their category
+ \pause
+\item Start from the first Candidate
+ \pause
+\item For every candidate, go through his/her list of preferences in descending order until we find one that (s)he is eligible for; assign him/her that course
+ \pause
+\item If the candidate is not eligible for any course, (s)he is not alloted any seat
+ \pause
+\item Go to the next candidate
+ \pause
+\item Algorithm terminates when all the candidates are thus processed
+ \pause
+\item Only minimal changes are needed to serve needs of DS and Foreign national student allocations
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Package Structure - code}
+\pause
+\textbf{code/common/} \\
+This has the following common classes used by both the algorithms:  \\
+\pause
+\textbf{Constants.class}  \\
+Contains all the constant variables names used anywhere in the code.  \\
+For e.g. male="MALE", gen=0, etc. \\
+\pause
+\textbf{Candidates.class} \\
+All the properties of a particular student are stored in an object of this class. It has all the attributes like rank, category, roll number, etc.  \\
+\pause
+\textbf{VirtualProgram.class} \\
+All the programs in various colleges are stored in an object of this class. It has attributes which store the number of seats available in different categories for the program, course code, etc.\\
+\pause
+\textbf{MeritList.class}  \\
+Contains the ranks of all the students of different categories\\
+\end{frame}
+\begin{frame}[t]{Package Structure - code}
+\textbf{code/gale/} \\
+\pause
+\textbf{GaleShapeleyAdmission.class} \\
+This class runs the entire GS algorithm and generates the corresponding output files\\
+\pause
+\textbf{code/merit/} \\
+\textbf{MeritOrderAdmission.class}\\
+This class runs the entire Merit Order algorithm and generates the corresponding output files\\
+\pause
+\textbf{code/main/} \\
+\textbf{Main.class} \\
+This class makes call to respective classes as and when needed and gets the entire allocation procedure executed\\
+\end{frame}
+
+\begin{frame}[t]{How to use}
+\pause
+\textbf{Allocation Part - Java}\\
+\pause
+Base folder(base/) contains the following: code, doc, test\_cases, Makefile\\
+\pause
+\textbf{Compiling}\\
+\begin{itemize}[<+->]
+\item Go to the base folder : \$ cd base/
+\item Type into the command line : \$ make all
+\end{itemize}
+\pause
+\textbf{Running the program}\\
+\begin{itemize}[<+->]
+\item Go to the base folder : \$ cd base/
+\item Type into the command line, folder\_name is the name of the folder in test\_cases : \$ java code.Main.Main folder\_name
+\item Here if you have various testcases with successive integers as folder names, e.g. 1 2 3 4 .. 100, then you can also run as :  \$ java Main.Main 1 100
+\item Go to the folder : \$ cd test\_cases/folder\_name
+\item GaleShapeleyAdmission.csv MeritOrderAdmission.csv GaleShapeleyAdmissionPretty.csv MeritOrderAdmissionPretty.csv are the outputs generated.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{How to use}
+\pause
+\textbf{Adding your own testcases}\\
+\begin{itemize}[<+->]
+\item Go to the test\_cases folder : \$ cd base/test\_cases/
+\item Create a directory : \$ mkdir folder\_name
+\item Go the created directory : \$ cd folder\_name
+\item Create the following three files : \$ touch ranklist.csv choices.csv programs.csv
+\item Populate the above three files in the prescribed format (refer given testcases)
+\end{itemize}
+\pause
+\textbf{Cleaning up...}\\
+\begin{itemize}[<+->]
+\item Go to the base folder : \$ base/
+\item Type into the command line : \$ make clean
+\item This removes all the .class files and also the java documentation, which were created when you executed the command `make all'
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{How to use}
+\textbf{Web Portal - Python}\\
+\pause
+\textbf{Pre-Allocation}\\
+\begin{itemize}[<+->]
+\item Student has to login into the portal using his roll number and the password (first time password is sent to his/her email id)
+\item There is also an option of forgot password where the user can reset his password by answering a security question
+\item Once the student logs in he/she can change his/her personal details by clicking on `Update profile", near "Logout' button on top right
+\item He/she can fill in his/her choices of preference anytime by going to `Fill Choices'
+\item A student can also see the list of possible programs the students may get based on previous year opening and closing ranks using `Seat Predictor'
+\end{itemize}
+\end{frame}
+\begin{frame}[t]{How to use}
+\textbf{Post-Allocation}\\
+\begin{itemize}[<+->]
+\item Once the last date for filling the preferences is over, the admin can get the choices.csv file from the database
+\item Then the output can be put in test\_cases folder and the Allocation program can be run
+\item The corresponding output can be put up then on the portal so that if the student logins then he can see his allocation
+\end{itemize}
+\pause
+Come on, go and get your seat! We are awaiting you here :D
+\end{frame}
+
+\begin{frame}[t]{Team}
+\textbf{Pradyot Prakash}\\
+\pause
+\begin{itemize}[<+->]
+\item Django part (major)
+\item Java part (minor)
+\item Beamer
+\item Video
+\end{itemize}
+  \pause
+\textbf{Chandra Maloo}\\
+\pause
+\begin{itemize}[<+->]
+\item Django part (major)
+\item Java part (minor)
+\item Testcases
+\item LaTeX Report
+\end{itemize}
+\pause
+\textbf{Shantanu Thakoor}\\
+\pause
+\begin{itemize}[<+->]
+\item Java part (major)
+\item Django part (minor)
+\item Makefile
+\item Javadoc
+\end{itemize}
+\pause
+\end{frame}
+
+\begin{frame}[t]{Bibliography}{}
+     \vspace{10mm}
+ \begin{beamerboxesrounded}[lower=blockstext,upper=blockstitle]{References}
+    \pause
+    \begin{itemize}[<+->]
+    \item www.tangowithdjango.com
+    \item www.stackoverflow.com
+    \item www.oracle.com/technetwork/java/javase/documentation/javadoc-137458.html
+    \item www.w3schools.com
+ \end{itemize}
+      \pause
+      \bibliography{biblio}{}
+\bibliographystyle{plain}
+  \end{beamerboxesrounded}
+\end{frame}
+
+\end{document}

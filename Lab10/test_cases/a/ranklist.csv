@@ -1,0 +1,4 @@
+UniqueId,gender,cml,ge,obc,sc,st,cml_pd,ge_pd,obc_pd,sc_pd,st_pd
+A,1,0,1,0,0,0,0,0,0,0,0
+B,1,0,2,2,0,0,0,0,0,0,0
+C,1,0,0,1,0,0,0,0,0,0,0

@@ -1,0 +1,162 @@
+\documentclass[]{report}   
+\usepackage[a4paper, total={6in, 8.2in}]{geometry}
+\usepackage{}              
+
+\begin{document}
+
+\title{\Huge \bf{Seat Allocation Portal}   }
+\author{\huge \bf{Team 31 : !false} }
+\date{\huge \bf{ Pradyot Prakash - 130050008 \\ Chandra Maloo - 130050009 \\ Shantanu Thakoor - 13D100003}   }       
+\maketitle
+\Large{
+\begin{abstract}
+	This is a software used for Allocation of seats of various engineering programmes to students based on their performance in a common entrance examination - JEE.
+	The software takes the Merit list containing various ranks of all the students and their choices of preference of the programs. On the contrary to what it seems this not an easy task. We have used two algorithms for the same. First one is quite simple one assuming this to be an easy job. But as it turns out this is not a fair algorithm. So we have used the well known Gale Shapeley algorithm for a fair allocation of seats. \\
+	We have also created a web portal using Django framework for the same. On this portal each user has an account and he/she can login to fill in the preferences of his choice. Later on, when the allocation has been done then the student can see which college has been allotted to him. Based on previous year ranks we are also suggesting the possible programmes that a student might get admitted to based on previous year opening and closing ranks.
+\end{abstract}
+}
+
+\chapter{Seat Allocation Algorithms}     
+\section{Gale Shapeley Algorithm}  
+The GaleShapely algorithm is pathbreaking but simple in its conception and implementation.
+Essentially, it goes as follows:
+\begin{itemize}
+\item Every candidate applies to the first program on its preference list
+\item Every program rejects certain candidates and waitlists the others based on capacity and the meritlist it uses
+\item Rejected candidates move one index further along their preference list, waitlisted candidates stay on the same index
+\item Algorithm terminates when either all candidates reach the end of their preference list, or no candidate is rejected by any program when it filters its applications
+\item When the algorithm terminates, a candidate is alloted the program that (s)he is currently waitlisted for; it (s)he is not waitlisted for anything, (s)he does not get alloted a seat
+\item Only minimal changes are needed to serve needs of DS and Foreign national student allocations
+\end{itemize}
+
+\section{Merit Order Admission}
+The MeritOrder algorithm is also simple; perhaps a tad too simple. It follows a greedy algorithm approach, allotting candidates the best seat it possibly can the first time it sees them, and never looks at them again.
+This algorithm is very easy to code, however it is not the best since it is not fair to all the candidates
+\begin{itemize}
+\item Arrange the candidates in order of their ranks
+\item Arrange the respective ranklists based on their category
+\item Start from the first Candidate
+\item For every candidate, go through his/her list of preferences in descending order until we find one that (s)he is eligible for; assign him/her that course
+\item If the candidate is not eligible for any course, (s)he is not alloted any seat
+\item Go to the next candidate
+\item Algorithm terminates when all the candidates are thus processed
+\item Only minimal changes are needed to serve needs of DS and Foreign national student allocations
+\end{itemize}
+
+\chapter{Package Structure - code}
+\section{common}
+This has the following common classes used by both the algorithms:
+\subsection{Constants.class}
+Contains all the constant variables names used anywhere in the code.
+For e.g. male="MALE", gen=0, etc.
+
+\subsection{Candidates.class}
+All the properties of a particular student are stored in an object of this class. It has all the attributes like rank, category, roll number, etc.
+
+\subsection{VirtualProgram.class}
+All the programs in various colleges are stored in an object of this class. It has attributes which store the number of seats available in different categories for the program, course code, etc.
+
+\subsection{MeritList.class}
+Contains the ranks of all the students of different categories
+
+\section{gale}
+\subsection{GaleShapeleyAdmission.class}
+This class runs the entire GS algorithm and generates the corresponding output files
+
+\section{merit}
+\subsection{MeritOrderAdmission.class}
+This class runs the entire Merit Order algorithm and generates the corresponding output files
+
+\section{main}
+\subsection{Main.class}
+This class makes call to respective classes as and when needed and gets the entire allocation procedure executed
+
+\chapter{How to use}
+Base folder contains the following: code, doc, test\_cases, Makefile. We will call it base/ for further references.
+
+\section{Allocation Part - Java}
+\subsection{Compiling}
+\begin{itemize}
+\item Go to the base folder : \$ cd base/
+\item Type into the command line : \$ make all
+\item Done ! 
+\end{itemize}
+
+\subsection{Running the program}
+\begin{itemize}
+\item Go to the base folder : \$ cd base/
+\item Type into the command line, folder\_name is the name of the folder in test\_cases : \$ java code.Main.Main folder\_name
+\item Here if you have various testcases with successive integers as folder names, e.g. 1 2 3 4 .. 100, then you can also run as :  \$ java Main.Main 1 100
+\item Go to the folder : \$ cd test\_cases/folder\_name
+\item GaleShapeleyAdmission.csv MeritOrderAdmission.csv GaleShapeleyAdmissionPretty.csv MeritOrderAdmissionPretty.csv are the outputs generated.
+\item Done !
+\end{itemize}
+
+\subsection{Adding your own testcases}
+\begin{itemize}
+\item Go to the test\_cases folder : \$ cd base/test\_cases/
+\item Create a directory : \$ mkdir folder\_name
+\item Go the created directory : \$ cd folder\_name
+\item Create the following three files : \$ touch ranklist.csv choices.csv programs.csv
+\item Populate the above three files in the prescribed format (refer given testcases)
+\item Done ! 
+\end{itemize}
+
+\subsection{Cleaning up...}
+\begin{itemize}
+\item Go to the base folder : \$ base/
+\item Type into the command line : \$ make clean
+\item This removes all the .class files and also the java documentation, which were created when you executed the command `make all'
+\end{itemize}
+
+\section{Web Portal - Python}
+\subsection{Pre-Allocation}
+\begin{itemize}
+\item Student has to login into the portal using his roll number and the password (first time password is sent to his/her email id)
+\item There is also an option of forgot password where the user can reset his password by answering a security question
+\item Once the student logs in he/she can change his/her personal details by clicking on `Update profile", near "Logout' button on top right
+\item He/she can fill in his/her choices of preference anytime by going to `Fill Choices'
+\item A student can also see the list of possible programs the students may get based on previous year opening and closing ranks using `Seat Predictor'
+\end{itemize}
+
+\subsection{Post-Allocation}
+\begin{itemize}
+\item Once the last date for filling the preferences is over, the admin can get the choices.csv from the database
+\item Then the output can be put in test\_cases folder and the Allocation program can be run
+\item The corresponding output can be put up then on the portal so that if the student logins then he can see his allocation
+\end{itemize}
+
+Come on, go and get your seat! We are awaiting you here :D
+
+
+\chapter{Team}
+\section{Pradyot Prakash}
+\begin{itemize}
+\item Django part (major)
+\item Java part (minor)
+\item Beamer
+\item Video
+\end{itemize}
+\section{Chandra Maloo}
+\begin{itemize}
+\item Django part (major)
+\item Java part (minor)
+\item Testcases
+\item LaTeX Report
+\end{itemize}
+\section{Shantanu Thakoor}
+\begin{itemize}
+\item Java part (major)
+\item Django part (minor)
+\item Makefile
+\item Javadoc
+\end{itemize}
+
+\begin{thebibliography}{9}
+\item http://www.tangowithdjango.com
+\item http://www.stackoverflow.com
+\item http://www.oracle.com/technetwork/java/javase/documentation/javadoc-137458.html
+\item http://w3schools.com
+\end{thebibliography}
+
+\end{document}
